@@ -50,7 +50,19 @@ else
 fi
 
 # 构建下载 URL
-os_arch=$(uname -m)
+if uname -m | grep -q 'x86_64'; then
+    os_arch="amd64"
+elif uname -m | grep -q 'i386\|i686'; then
+    os_arch="386"
+elif uname -m | grep -q 'aarch64\|armv8b\|armv8l'; then
+    os_arch="arm64"
+elif uname -m | grep -q 'arm'; then
+    os_arch="arm"
+elif uname -m | grep -q 's390x'; then
+    os_arch="s390x"
+elif uname -m | grep -q 'riscv64'; then
+    os_arch="riscv64"
+fi
 NZ_AGENT_URL="https://github.com/nezhahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
 
 # 下载文件到 /tmp 目录
@@ -63,17 +75,15 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 解压文件并重命名
-echo "正在解压文件到 ${NZ_AGENT_PATH}/nezha-agentv1"
-sudo unzip -o /tmp/nezha-agent.zip -d ${NZ_AGENT_PATH}/nezha-agentv1
-
-# 检查解压是否成功
+echo "正在解压文件到 /tmp/nezha-agent"
+sudo unzip -o /tmp/nezha-agent.zip -d /tmp/nezha-agent
 if [ $? -ne 0 ]; then
     echo "解压失败，请检查文件或权限"
     exit 1
 fi
-
-# 删除临时下载文件
+echo "将解压后的文件移动到 ${NZ_AGENT_PATH}/nezha-agentv1"
+sudo mv /tmp/nezha-agent/* ${NZ_AGENT_PATH}/nezha-agentv1
+sudo rm -rf /tmp/nezha-agent
 rm -f /tmp/nezha-agent.zip
 
 echo "监控端安装完成，路径: ${NZ_AGENT_PATH}/nezha-agentv1"
