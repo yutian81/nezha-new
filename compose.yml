@@ -1,0 +1,21 @@
+services:
+  dashboard:
+    image: ghcr.io/nezhahq/nezha:v1.0.5
+    restart: always
+    volumes:
+      - ./data:/dashboard/data
+  nginx:
+    image: nginx:stable-alpine
+    restart: always
+    volumes:
+      - ${PWD}/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - dashboard
+  tunnel:
+    image: cloudflare/cloudflared
+    restart: always
+    command: tunnel run --protocol http2
+    environment:
+      - TUNNEL_TOKEN
+    depends_on:
+      - dashboard
