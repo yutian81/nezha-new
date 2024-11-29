@@ -51,7 +51,7 @@ fi
 
 # 构建下载 URL
 os_arch=$(uname -m)
-NZ_AGENT_URL="https://github.com/naibahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
+NZ_AGENT_URL="https://github.com/nezhahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
 
 # 下载文件到 /tmp 目录
 echo "正在下载文件到 /tmp/nezha-agent.zip"
