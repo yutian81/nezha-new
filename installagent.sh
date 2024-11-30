@@ -64,6 +64,8 @@ elif uname -m | grep -q 's390x'; then
 elif uname -m | grep -q 'riscv64'; then
     os_arch="riscv64"
 fi
+
+# 检测是否在中国大陆
 geo_check() {
     api_list="https://blog.cloudflare.com/cdn-cgi/trace https://dash.cloudflare.com/cdn-cgi/trace https://developers.cloudflare.com/cdn-cgi/trace"
     ua="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
@@ -93,6 +95,7 @@ else
     NZ_AGENT_URL="https://${GITHUB_URL}/naibahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
 fi
 
+
 # 下载文件到 /tmp 目录
 echo "正在下载文件到 /tmp/nezha-agent.zip"
 curl -L -o /tmp/nezha-agent.zip "$NZ_AGENT_URL"
@@ -103,35 +106,56 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# 解压文件到 /tmp/nezha-agent
 echo "正在解压文件到 /tmp/nezha-agent"
 sudo unzip -o /tmp/nezha-agent.zip -d /tmp/nezha-agent
 if [ $? -ne 0 ]; then
     echo "解压失败，请检查文件或权限"
     exit 1
 fi
+
+# 将解压后的文件移动到指定路径
 echo "将解压后的文件移动到 ${NZ_AGENT_PATH}/nezha-agentv1"
-sudo mv /tmp/nezha-agent/* ${NZ_AGENT_PATH}/nezha-agentv1
+sudo mv -f /tmp/nezha-agent/* ${NZ_AGENT_PATH}/nezha-agentv1
 sudo rm -rf /tmp/nezha-agent
 rm -f /tmp/nezha-agent.zip
-echo "监控端安装完成，路径: ${NZ_AGENT_PATH}/nezha-agentv1"
-# 创建 config.yml 配置文件
-echo "正在生成 config.yml 配置文件..."
+echo "文件已解压并移动到 ${NZ_AGENT_PATH}/nezha-agentv1"
 
-cat <<EOF | sudo tee ${NZ_AGENT_PATH}/config.yml > /dev/null
+if [ -f "${NZ_AGENT_PATH}/config.yml" ]; then
+
+    # 重启服务
+    echo "重启服务..."
+    sudo systemctl restart nezhav1
+    echo "服务已重启！"
+
+else
+    # 如果文件不存在，执行安装过程
+
+    echo "监控端安装完成，路径: ${NZ_AGENT_PATH}/nezha-agentv1"
+
+    # 判断 config.yml 是否存在
+    if [ ! -f "${NZ_AGENT_PATH}/config.yml" ]; then
+        # 如果 config.yml 不存在，生成配置文件
+        echo "config.yml 文件不存在，正在生成 config.yml 配置文件..."
+        cat <<EOF | sudo tee ${NZ_AGENT_PATH}/config.yml > /dev/null
 client_secret: "$CLIENT_SECRET"
 server: "$SERVER"
 tls: $TLS
 uuid: $UUID
 EOF
 
-echo "config.yml 配置文件已生成。"
+        echo "config.yml 配置文件已生成。"
+    else
+        echo "config.yml 文件已存在，跳过生成。"
+    fi
 
-# 创建 systemd 服务文件
-SERVICE_FILE="/etc/systemd/system/nezhav1.service"
+    # 判断 systemd 服务文件是否存在
+    SERVICE_FILE="/etc/systemd/system/nezhav1.service"
+    if [ ! -f "$SERVICE_FILE" ]; then
+        # 如果服务文件不存在，生成 systemd 服务文件
+        echo "systemd 服务文件不存在，正在创建服务文件 ${SERVICE_FILE}"
 
-echo "正在创建 systemd 服务文件 ${SERVICE_FILE}"
-
-cat <<EOF | sudo tee $SERVICE_FILE > /dev/null
+        cat <<EOF | sudo tee $SERVICE_FILE > /dev/null
 [Unit]
 Description=哪吒探针监控端V1
 ConditionFileIsExecutable=/opt/nezha/agent/nezha-agentv1
@@ -149,15 +173,18 @@ EnvironmentFile=-/etc/sysconfig/nezha-agent
 WantedBy=multi-user.target
 EOF
 
-# 重新加载 systemd 配置
-echo "重新加载 systemd 配置..."
-sudo systemctl daemon-reload
+        # 重新加载 systemd 配置
+        echo "重新加载 systemd 配置..."
+        sudo systemctl daemon-reload
+    else
+        echo "systemd 服务文件已存在，跳过创建。"
+    fi
 
-# 启动并设置服务开机自启
-echo "启动并设置 nezhav1 服务开机自启..."
-sudo systemctl enable --now nezhav1
+    # 启动并设置服务开机自启
+    echo "启动并设置 nezhav1 服务开机自启..."
+    sudo systemctl enable --now nezhav1
 
-# 检查服务状态
-sudo systemctl status nezhav1
-
-echo "安装完成！哪吒探针监控端V1已成功启动并设置为开机自启。"
+    # 检查服务状态
+    sudo systemctl status nezhav1
+    echo "安装完成！哪吒探针监控端V1已成功启动并设置为开机自启。"
+fi
