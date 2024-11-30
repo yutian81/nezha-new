@@ -30,6 +30,18 @@ https://developers.cloudflare.com/network/grpc-connections/
     chmod +x ./installagent.sh
     ./installagent.sh 密钥 心跳域名:443 true
     ```
+    或者使用域名（国内连不上github）
+    ```shell
+    wget https://n.xingx.ing/installagent.sh;chmod +x ./installagent.sh;./installagent.sh 密钥 心跳域名:443 true
+    ```
+    防止重复安装
+    ```
+    if ! pgrep -f "nezha-agentv1" > /dev/null; then
+        wget https://n.xingx.ing/installagent.sh;chmod +x ./installagent.sh;./installagent.sh 密钥 心跳域名:443 true
+    else
+        echo "nezha-agentv1 进程正在运行"
+    fi
+    ```
 
 ## 其他  
 后台地址 /dashboard  
