@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#set -x
 # 检查是否传入了必要的参数
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <client_secret> <server> <tls>"
@@ -32,7 +33,7 @@ echo "正在下载监控端..."
 # 获取 Nezha 最新版本号
 _version=$(curl -m 10 -sL "https://api.github.com/repos/nezhahq/agent/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
 if [ -z "$_version" ]; then
-    _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/nezhahq/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
+    _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/naibahq/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
 fi
 if [ -z "$_version" ]; then
     _version=$(curl -m 10 -sL "https://fastly.jsdelivr.net/gh/nezhahq/agent/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/naiba\/nezha@/v/g')
@@ -63,7 +64,34 @@ elif uname -m | grep -q 's390x'; then
 elif uname -m | grep -q 'riscv64'; then
     os_arch="riscv64"
 fi
-NZ_AGENT_URL="https://github.com/nezhahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
+geo_check() {
+    api_list="https://blog.cloudflare.com/cdn-cgi/trace https://dash.cloudflare.com/cdn-cgi/trace https://developers.cloudflare.com/cdn-cgi/trace"
+    ua="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+    set -- "$api_list"
+    for url in $api_list; do
+        text="$(curl -A "$ua" -m 10 -s "$url")"
+        endpoint="$(echo "$text" | sed -n 's/.*h=\([^ ]*\).*/\1/p')"
+        if echo "$text" | grep -qw 'CN'; then
+            CN=true
+            break
+        elif echo "$url" | grep -q "$endpoint"; then
+            break
+        fi
+    done
+}
+if [ -z "$CN" ]; then
+    geo_check
+fi
+if [ -z "$CN" ]; then
+    GITHUB_URL="github.com"
+else
+    GITHUB_URL="gitee.com"
+fi
+if [ -z "$CN" ]; then
+    NZ_AGENT_URL="https://${GITHUB_URL}/nezhahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
+else
+    NZ_AGENT_URL="https://${GITHUB_URL}/naibahq/agent/releases/download/${_version}/nezha-agent_linux_${os_arch}.zip"
+fi
 
 # 下载文件到 /tmp 目录
 echo "正在下载文件到 /tmp/nezha-agent.zip"
@@ -85,9 +113,7 @@ echo "将解压后的文件移动到 ${NZ_AGENT_PATH}/nezha-agentv1"
 sudo mv /tmp/nezha-agent/* ${NZ_AGENT_PATH}/nezha-agentv1
 sudo rm -rf /tmp/nezha-agent
 rm -f /tmp/nezha-agent.zip
-
 echo "监控端安装完成，路径: ${NZ_AGENT_PATH}/nezha-agentv1"
-
 # 创建 config.yml 配置文件
 echo "正在生成 config.yml 配置文件..."
 
