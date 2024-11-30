@@ -19,7 +19,7 @@ https://developers.cloudflare.com/network/grpc-connections/
     docker compose up -d 
     ```
 5. 服务端映射到CF  
-    CloudFlare Tunnel管理页 https://one.dash.cloudflare.com/ 加1个Public hostname 指向 `http://dashboard:8008`
+    CloudFlare Tunnel管理页 https://one.dash.cloudflare.com/ 加1个Public hostname 指向 `http://nginx:80`
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
 1. 仪表板服务器域名/IP（无 CDN）  
