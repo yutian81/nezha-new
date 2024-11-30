@@ -28,8 +28,7 @@ https://developers.cloudflare.com/network/grpc-connections/
 可以写`nz-realip`或者`CF-Connecting-IP`
 
 ## AGENT
-官方脚本配置即可，注意手动修改8008端口为443。
-
+dashboard右上角复制安装命令，注意手动修改参数中的8008端口为443，TLS改为True。
 ## DOCKER 安装 AGENT(可选)
 ...晚点写
 ## 其他  
