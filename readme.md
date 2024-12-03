@@ -30,6 +30,12 @@ https://developers.cloudflare.com/network/grpc-connections/
    要跳过的 WAF 组件：全选
    
    部署即可。
+7. (可选)将配置文件中的 TLS设置为True  
+    编辑 data/config.yaml，找到 tls:这项，修改为 `tls: true` 后 保存。然后
+   ```shell
+   docker compose down && docker compose up -d
+   ```
+   重启服务生效
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
 1. Agent对接地址【域名/IP:端口】  
@@ -38,7 +44,7 @@ https://developers.cloudflare.com/network/grpc-connections/
 可以写`nz-realip`或者`CF-Connecting-IP`
 
 ## AGENT
-dashboard右上角复制安装命令，注意手动修改参数中的8008端口为443，TLS改为True。
+dashboard右上角复制安装命令，注意手动修改参数中的8008端口为443（如果你没有修改Agent对接地址），TLS改为True（如果你没有将配置文件中的 TLS设置为True）。
 ## DOCKER 安装 AGENT(可选)
 ...晚点写
 ## 其他  
