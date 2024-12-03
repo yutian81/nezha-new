@@ -22,8 +22,8 @@ https://developers.cloudflare.com/network/grpc-connections/
     CloudFlare Tunnel管理页 https://one.dash.cloudflare.com/ 加1个Public hostname 指向 `http://nginx:80`
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
-1. 仪表板服务器域名/IP（无 CDN）  
-上面的 Public hostname
+1. Agent对接地址【域名/IP:端口】  
+上面的 Public hostname:443
 2. 真实IP请求头  
 可以写`nz-realip`或者`CF-Connecting-IP`
 
