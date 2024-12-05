@@ -32,6 +32,12 @@ https://developers.cloudflare.com/network/grpc-connections/
 2. 真实IP请求头  
 可以写`nz-realip`或者`CF-Connecting-IP`
 
+## Dashboard更新
+进入你的项目目录下(compose.yml同级)
+```shell
+docker compose pull
+docker compose up -d 
+```
 ## AGENT
 dashboard右上角复制安装命令，注意手动修改参数中的8008端口为443（如果你没有修改Agent对接地址），TLS改为True（如果你没有将配置文件中的 TLS设置为True）。
 ## DOCKER 安装 AGENT(可选)
