@@ -1,7 +1,7 @@
 # 哪吒v1 Docker CloudFlare Tunnel版   
 无需公网IP，全程都在CF下，项目优势：
 1. 不暴露公网ip 防止被攻击
-2. 单栈转双栈 ipv4 ipv6 都能用 纯ipv6🐔 也方便挂探针
+2. 单栈转双栈 ipv4 ipv6 都能用 纯ipv6 也方便挂探针
 3. 除境内网络外 走cf基本都优化
 4. 开箱即用 迁移备份方便
 ## Dashboard安装
@@ -25,16 +25,10 @@ https://developers.cloudflare.com/network/grpc-connections/
 操作路径：安全性-WAF-工具  
 或者参考文档
 	https://developers.cloudflare.com/waf/tools/ip-access-rules/
-8. (可选)将配置文件中的 TLS设置为True  
-    编辑 data/config.yaml，找到 tls:这项，修改为 `tls: true` 后 保存。然后
-   ```shell
-   docker compose down && docker compose up -d
-   ```
-   重启服务生效
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
 1. Agent对接地址【域名/IP:端口】  
-上面的 Public hostname:443
+上面的 Public hostname:443，`Agent 使用 TLS 连接`打勾
 2. 真实IP请求头  
 可以写`nz-realip`或者`CF-Connecting-IP`
 
