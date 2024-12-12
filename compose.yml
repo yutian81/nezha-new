@@ -1,16 +1,26 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "2"
 services:
   dashboard:
     image: ghcr.io/nezhahq/nezha
     restart: always
     volumes:
       - ./data:/dashboard/data
+    logging: *default-logging
+
   nginx:
     image: nginx:stable-alpine
     restart: always
     volumes:
-      - ./conf.d:/etc/nginx/conf.d
+      - ${PWD}/conf.d:/etc/nginx/conf.d
     depends_on:
       - dashboard
+    logging: *default-logging
+
   tunnel:
     image: cloudflare/cloudflared
     restart: always
@@ -19,3 +29,4 @@ services:
       - TUNNEL_TOKEN
     depends_on:
       - dashboard
+    logging: *default-logging
