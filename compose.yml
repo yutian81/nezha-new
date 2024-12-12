@@ -16,7 +16,7 @@ services:
     image: nginx:stable-alpine
     restart: always
     volumes:
-      - ${PWD}/conf.d:/etc/nginx/conf.d
+      - ./conf.d:/etc/nginx/conf.d
     depends_on:
       - dashboard
     logging: *default-logging
