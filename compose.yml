@@ -30,3 +30,16 @@ services:
     depends_on:
       - dashboard
     logging: *default-logging
+
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     - WATCHTOWER_DEBUG=true
+  #     - WATCHTOWER_CLEANUP=true
+  #     - WATCHTOWER_NOTIFICATIONS=shoutrrr
+  #     - WATCHTOWER_NOTIFICATION_URL=telegram://${TELEGRAM_BOT_TOKEN}@telegram?chats=${TELEGRAM_CHAT_ID}
+  #     - WATCHTOWER_POLL_INTERVAL=600
+  #   logging: *default-logging

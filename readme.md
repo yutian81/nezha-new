@@ -25,6 +25,8 @@ https://developers.cloudflare.com/network/grpc-connections/
 操作路径：安全性-WAF-工具  
 或者参考文档
 	https://developers.cloudflare.com/waf/tools/ip-access-rules/
+7. (可选)配置自动更新  
+watchtower相关的注释都禁用掉，修改.env里面的 `TELEGRAM_BOT_TOKEN`、 `TELEGRAM_CHAT_ID` 以实现更新通知。
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
 1. Agent对接地址【域名/IP:端口】  
