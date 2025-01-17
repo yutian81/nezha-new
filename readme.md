@@ -27,6 +27,8 @@ https://developers.cloudflare.com/network/grpc-connections/
 	https://developers.cloudflare.com/waf/tools/ip-access-rules/
 7. (可选)配置自动更新  
 watchtower相关的注释都禁用掉，修改.env里面的 `TELEGRAM_BOT_TOKEN`、 `TELEGRAM_CHAT_ID` 以实现更新通知。
+8. (可选)自动备份到Github  
+backup相关的注释都禁用掉，修改.env里面的`GITHUB_USER`、 `GITHUB_TOKEN`、`GIT_REMOTE_URL`、`CRON_SCHEDULE` 以实现自动备份到Github。
 ## Dashboard配置
 /dashboard/settings  里面设置一下 
 1. Agent对接地址【域名/IP:端口】  

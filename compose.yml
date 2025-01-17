@@ -43,3 +43,14 @@ services:
   #     - WATCHTOWER_NOTIFICATION_URL=telegram://${TELEGRAM_BOT_TOKEN}@telegram?chats=${TELEGRAM_CHAT_ID}
   #     - WATCHTOWER_POLL_INTERVAL=600
   #   logging: *default-logging
+
+  # backup:
+  #   image: ghcr.io/yumusb/autobackup:latest
+  #   restart: always
+  #   volumes:
+  #     - ./:/app
+  #   environment:
+  #     - GITHUB_USER
+  #     - GITHUB_TOKEN
+  #     - GIT_REMOTE_URL
+  #     - CRON_SCHEDULE
