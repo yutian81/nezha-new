@@ -44,13 +44,13 @@ services:
   #     - WATCHTOWER_POLL_INTERVAL=600
   #   logging: *default-logging
 
-  # backup:
-  #   image: ghcr.io/yumusb/autobackup:latest
-  #   restart: always
-  #   volumes:
-  #     - ./:/app
-  #   environment:
-  #     - GITHUB_USER
-  #     - GITHUB_TOKEN
-  #     - GIT_REMOTE_URL
-  #     - CRON_SCHEDULE
+  backup:
+    image: ghcr.io/yumusb/autobackup:latest
+    restart: always
+    volumes:
+      - ./:/app
+    environment:
+      - GITHUB_USER
+      - GITHUB_TOKEN
+      - GIT_REMOTE_URL
+      - CRON_SCHEDULE
